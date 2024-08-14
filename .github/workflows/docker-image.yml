@@ -27,4 +27,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/your-repo-name:${{ github.ref_name }}
+        tags: ${{ secrets.DOCKER_USERNAME }}/py-tube2pod:${{ github.ref_name }}
