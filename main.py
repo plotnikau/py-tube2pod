@@ -22,7 +22,6 @@ def download_and_process_video(url: str, chat_id: int, update: Update) -> tuple:
     # Download video using yt-dlp
     ydl_opts = {
         'format': 'bestaudio/best',
-        #'outtmpl': f'{download_dir}/%(title)s.%(ext)s',
         'outtmpl': f'{download_dir}/%(id)s.%(ext)s',
         'writethumbnail': True,
         'embedthumbnail': True,
@@ -63,6 +62,9 @@ def split_audio(file_path: str, part_size_minutes: int = 50) -> list:
         part.export(part_name, format="mp3")
         audio_parts.append(part_name)
 
+    # sort parts in reverse order
+    audio_parts.sort(key=lambda x: int(x.split('_')[-1][:-4]), reverse=True)
+    
     return audio_parts
 
 async def handle_message(update: Update, context: CallbackContext) -> None:
@@ -71,7 +73,7 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
 
     if "youtube.com" in url or "youtu.be" in url:
         try:
-            update.message.reply_text("Downloading video...")
+            await update.message.reply_text("Downloading video...")
             mp3_path, title, thumbnail_path = download_and_process_video(url, chat_id, update)
             await update.message.reply_text("Extracting and splitting audio...")
 
